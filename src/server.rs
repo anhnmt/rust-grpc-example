@@ -31,6 +31,8 @@ impl Greeter for MyGreeter {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    tracing_subscriber::fmt::init();
+
     let addr = "[::1]:50051".parse()?;
 
     let reflection_service = tonic_reflection::server::Builder::configure()
@@ -44,7 +46,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let greeter = MyGreeter::default();
 
+    println!("GreeterServer listening on {}", addr);
+
     Server::builder()
+        // GrpcWeb is over http1 so we must enable it.
+        .accept_http1(true)
+        .layer(tower_http::cors::CorsLayer::new())
+        .layer(tonic_web::GrpcWebLayer::new())
         .add_service(reflection_service)
         .add_service(reflection_service_v1alpha)
         .add_service(GreeterServer::new(greeter))
