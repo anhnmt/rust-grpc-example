@@ -1,0 +1,21 @@
+[package]
+name = "rust-grpc-example"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]] # Bin to run the HelloWorld gRPC server
+name = "helloworld-server"
+path = "src/server.rs"
+
+[[bin]] # Bin to run the HelloWorld gRPC client
+name = "helloworld-client"
+path = "src/client.rs"
+
+[dependencies]
+prost = "0.13.3"
+tokio = { version = "1.40.0", features = ["macros", "rt-multi-thread"] }
+tonic = "0.12.3"
+tonic-reflection = "0.12.3"
+
+[build-dependencies]
+tonic-build = "0.12"
