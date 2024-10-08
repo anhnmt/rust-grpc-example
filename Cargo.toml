@@ -21,6 +21,7 @@ tower = "0.5.1"
 tonic-web = "0.12.3"
 tower-http = { version = "0.6.1", features = ["cors"] }
 hyper-util = "0.1.9"
+tracing = "0.1.40"
 
 [build-dependencies]
 tonic-build = "0.12"

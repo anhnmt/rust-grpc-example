@@ -752,6 +752,7 @@ dependencies = [
  "tonic-web",
  "tower 0.5.1",
  "tower-http 0.6.1",
+ "tracing",
  "tracing-subscriber",
 ]
 

@@ -19,7 +19,7 @@ impl Greeter for MyGreeter {
         &self,
         request: Request<HelloRequest>,
     ) -> Result<Response<HelloReply>, Status> {
-        println!("Got a request: {:?}", request);
+        tracing::info!("Received request: {:?}", request);
 
         let reply = HelloReply {
             message: format!("Hello {}!", request.into_inner().name),
@@ -31,7 +31,9 @@ impl Greeter for MyGreeter {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    tracing_subscriber::fmt::init();
+    tracing_subscriber::fmt()
+        .with_max_level(tracing::Level::INFO)
+        .init();
 
     let addr = "[::1]:50051".parse()?;
 
@@ -46,7 +48,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let greeter = MyGreeter::default();
 
-    println!("GreeterServer listening on {}", addr);
+    tracing::info!(message = "Starting server.", %addr);
 
     Server::builder()
         // GrpcWeb is over http1 so we must enable it.
