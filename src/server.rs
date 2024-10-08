@@ -34,15 +34,21 @@ impl Greeter for MyGreeter {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let addr = "[::1]:50051".parse()?;
+
     let reflection_service = tonic_reflection::server::Builder::configure()
         .register_encoded_file_descriptor_set(proto::FILE_DESCRIPTOR_SET)
-        .build_v1()
-        .unwrap();
+        .include_reflection_service(false)
+        .build_v1()?;
+
+    let reflection_service_v1alpha = tonic_reflection::server::Builder::configure()
+        .register_encoded_file_descriptor_set(proto::FILE_DESCRIPTOR_SET)
+        .build_v1alpha()?;
 
     let greeter = MyGreeter::default();
 
     Server::builder()
         .add_service(reflection_service)
+        .add_service(reflection_service_v1alpha)
         .add_service(GreeterServer::new(greeter))
         .serve(addr)
         .await?;
