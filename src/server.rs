@@ -1,5 +1,3 @@
-mod client;
-
 use tonic::{transport::Server, Request, Response, Status};
 
 use proto::greeter_server::{Greeter, GreeterServer};
