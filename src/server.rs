@@ -44,11 +44,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let reflection_service_v1alpha = tonic_reflection::server::Builder::configure()
         .register_encoded_file_descriptor_set(proto::FILE_DESCRIPTOR_SET)
+        .include_reflection_service(false)
         .build_v1alpha()?;
 
     let greeter = MyGreeter::default();
 
-    tracing::info!(message = "Starting server.", %addr);
+    tracing::info!("Starting server: {:?}", addr);
 
     Server::builder()
         // GrpcWeb is over http1 so we must enable it.
