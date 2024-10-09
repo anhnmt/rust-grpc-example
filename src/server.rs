@@ -76,10 +76,15 @@ impl Greeter for MyGreeter {
         tokio::spawn(async move {
             while let Some(result) = in_stream.next().await {
                 match result {
-                    Ok(v) => tx
-                        .send(Ok(HelloReply { message: v.name }))
-                        .await
-                        .expect("working rx"),
+                    Ok(v) => {
+                        tracing::info!("Received streaming request: {:?}", v);
+
+                        tx.send(Ok(HelloReply {
+                            message: format!("Hello {}!", v.name)
+                        }))
+                            .await
+                            .expect("working rx")
+                    }
                     Err(err) => {
                         if let Some(io_err) = match_for_io_error(&err) {
                             if io_err.kind() == ErrorKind::BrokenPipe {
